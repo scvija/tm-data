@@ -195,102 +195,106 @@
             background: linear-gradient(135deg, #f8f9fa, #e9ecef);
         }
         
-        .spotlight-grid {
+        .spotlight-tables-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 40px;
         }
         
-        .spotlight-card {
+        .spotlight-table-container {
             background: white;
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
             overflow: hidden;
         }
         
-        .spotlight-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        
-        .spotlight-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
+        .spotlight-table-title {
             background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
         }
         
-        .spotlight-card.winner::before {
+        .spotlight-table-title.winners {
             background: linear-gradient(135deg, #27ae60, #2ecc71);
         }
         
-        .spotlight-card.loser::before {
+        .spotlight-table-title.losers {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
         }
         
-        .spotlight-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 15px;
+        .spotlight-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .spotlight-table th {
+            background: #f8f9fa;
             color: #333;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+            border-bottom: 2px solid #dee2e6;
         }
         
-        .spotlight-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+        .spotlight-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
         }
         
-        .spotlight-stat {
-            text-align: center;
+        .spotlight-table tr:hover td {
+            background-color: #f8f9fa;
         }
         
-        .spotlight-stat-number {
-            font-size: 2em;
+        .spotlight-rank {
             font-weight: bold;
             color: #667eea;
+            text-align: center;
+            width: 50px;
         }
         
-        .spotlight-stat.wins .spotlight-stat-number {
+        .spotlight-wins {
+            font-weight: bold;
             color: #27ae60;
+            text-align: center;
+            width: 60px;
         }
         
-        .spotlight-stat.participations .spotlight-stat-number {
+        .spotlight-participations {
             color: #3498db;
+            text-align: center;
+            width: 80px;
         }
         
-        .spotlight-stat.ratio .spotlight-stat-number {
+        .spotlight-ratio {
+            font-weight: bold;
             color: #e74c3c;
-        }
-        
-        .spotlight-stat-label {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 5px;
+            text-align: center;
+            width: 70px;
         }
         
         .spotlight-handle {
-            font-size: 1.2em;
-            font-weight: bold;
             color: #1da1f2;
-            margin-bottom: 10px;
+            font-weight: 500;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
         .spotlight-address {
             font-family: 'Courier New', monospace;
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #666;
-            background: #f8f9fa;
-            padding: 8px 12px;
-            border-radius: 8px;
-            word-break: break-all;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
         .section-divider {
@@ -340,6 +344,29 @@
             
             th, td {
                 padding: 10px 15px;
+            }
+            
+            .spotlight-tables-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .spotlight-section {
+                padding: 20px;
+            }
+            
+            .spotlight-table th,
+            .spotlight-table td {
+                padding: 8px 6px;
+                font-size: 0.8em;
+            }
+            
+            .spotlight-handle {
+                max-width: 80px;
+            }
+            
+            .spotlight-address {
+                max-width: 70px;
             }
         }
         
@@ -401,129 +428,225 @@
         
         
         <div class="spotlight-section">
-            <h2 class="section-title">🌟 Spotlight: Biggest Winners & Losers</h2>
+            <h2 class="section-title">🌟 Top 10 Winners & Losers</h2>
             
-            <div class="spotlight-grid">
-                <div class="spotlight-card winner">
-                    <div class="spotlight-title">🏆 Top Winner</div>
-                    <div class="spotlight-handle">@troy_avo</div>
-                    <div class="spotlight-stats">
-                        <div class="spotlight-stat wins">
-                            <div class="spotlight-stat-number">8</div>
-                            <div class="spotlight-stat-label">Wins</div>
-                        </div>
-                        <div class="spotlight-stat participations">
-                            <div class="spotlight-stat-number">13</div>
-                            <div class="spotlight-stat-label">Participations</div>
-                        </div>
-                        <div class="spotlight-stat ratio">
-                            <div class="spotlight-stat-number">61.5%</div>
-                            <div class="spotlight-stat-label">Win Rate</div>
-                        </div>
-                    </div>
-                    <div class="spotlight-address">0x7a29f3a2f65f34105f...</div>
+            <div class="spotlight-tables-container">
+                <div class="spotlight-table-container">
+                    <div class="spotlight-table-title winners">🏆 Top 10 Winners</div>
+                    <table class="spotlight-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Wins</th>
+                                <th>Part</th>
+                                <th>Win%</th>
+                                <th>Twitter</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+            <tr>
+                <td class="spotlight-rank">1</td>
+                <td class="spotlight-wins">8</td>
+                <td class="spotlight-participations">13</td>
+                <td class="spotlight-ratio">61.5%</td>
+                <td class="spotlight-handle">@troy_avo</td>
+                <td class="spotlight-address">0x7a29...8547</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">2</td>
+                <td class="spotlight-wins">6</td>
+                <td class="spotlight-participations">12</td>
+                <td class="spotlight-ratio">50.0%</td>
+                <td class="spotlight-handle">@fozzydiablo</td>
+                <td class="spotlight-address">0x0b28...c564</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">3</td>
+                <td class="spotlight-wins">6</td>
+                <td class="spotlight-participations">15</td>
+                <td class="spotlight-ratio">40.0%</td>
+                <td class="spotlight-handle">@omgcorn</td>
+                <td class="spotlight-address">0x8e74...15ef</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">4</td>
+                <td class="spotlight-wins">6</td>
+                <td class="spotlight-participations">16</td>
+                <td class="spotlight-ratio">37.5%</td>
+                <td class="spotlight-handle">@poolpitako</td>
+                <td class="spotlight-address">0x9888...acf4</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">5</td>
+                <td class="spotlight-wins">6</td>
+                <td class="spotlight-participations">17</td>
+                <td class="spotlight-ratio">35.3%</td>
+                <td class="spotlight-handle">@DuckDegen</td>
+                <td class="spotlight-address">0xaa16...6c17</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">6</td>
+                <td class="spotlight-wins">5</td>
+                <td class="spotlight-participations">15</td>
+                <td class="spotlight-ratio">33.3%</td>
+                <td class="spotlight-handle">@TokenBrice</td>
+                <td class="spotlight-address">0xaa7a...7d66</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">7</td>
+                <td class="spotlight-wins">5</td>
+                <td class="spotlight-participations">15</td>
+                <td class="spotlight-ratio">33.3%</td>
+                <td class="spotlight-handle">@_RedArctic_</td>
+                <td class="spotlight-address">0x11d2...0812</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">8</td>
+                <td class="spotlight-wins">5</td>
+                <td class="spotlight-participations">15</td>
+                <td class="spotlight-ratio">33.3%</td>
+                <td class="spotlight-handle">@MikeGriff11</td>
+                <td class="spotlight-address">0x049e...c11c</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">9</td>
+                <td class="spotlight-wins">5</td>
+                <td class="spotlight-participations">16</td>
+                <td class="spotlight-ratio">31.3%</td>
+                <td class="spotlight-handle">@Jrag0x</td>
+                <td class="spotlight-address">0x4a9a...3c78</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">10</td>
+                <td class="spotlight-wins">5</td>
+                <td class="spotlight-participations">16</td>
+                <td class="spotlight-ratio">31.3%</td>
+                <td class="spotlight-handle">@Ceazor7</td>
+                <td class="spotlight-address">0x3c5a...7fe2</td>
+            </tr>
+        
+                        </tbody>
+                    </table>
                 </div>
                 
-                <div class="spotlight-card winner">
-                    <div class="spotlight-title">🥈 Second Place</div>
-                    <div class="spotlight-handle">@fozzydiablo</div>
-                    <div class="spotlight-stats">
-                        <div class="spotlight-stat wins">
-                            <div class="spotlight-stat-number">6</div>
-                            <div class="spotlight-stat-label">Wins</div>
-                        </div>
-                        <div class="spotlight-stat participations">
-                            <div class="spotlight-stat-number">12</div>
-                            <div class="spotlight-stat-label">Participations</div>
-                        </div>
-                        <div class="spotlight-stat ratio">
-                            <div class="spotlight-stat-number">50.0%</div>
-                            <div class="spotlight-stat-label">Win Rate</div>
-                        </div>
-                    </div>
-                    <div class="spotlight-address">0x0b28bdce48a29635cd...</div>
-                </div>
-                
-                <div class="spotlight-card winner">
-                    <div class="spotlight-title">🥉 Third Place</div>
-                    <div class="spotlight-handle">@omgcorn</div>
-                    <div class="spotlight-stats">
-                        <div class="spotlight-stat wins">
-                            <div class="spotlight-stat-number">6</div>
-                            <div class="spotlight-stat-label">Wins</div>
-                        </div>
-                        <div class="spotlight-stat participations">
-                            <div class="spotlight-stat-number">15</div>
-                            <div class="spotlight-stat-label">Participations</div>
-                        </div>
-                        <div class="spotlight-stat ratio">
-                            <div class="spotlight-stat-number">40.0%</div>
-                            <div class="spotlight-stat-label">Win Rate</div>
-                        </div>
-                    </div>
-                    <div class="spotlight-address">0x8e740f0b83cb0ca7aa...</div>
-                </div>
-            </div>
-            
-            <div class="spotlight-grid">
-                <div class="spotlight-card loser">
-                    <div class="spotlight-title">😔 Most Unlucky</div>
-                    <div class="spotlight-handle">@TWlTTERGM</div>
-                    <div class="spotlight-stats">
-                        <div class="spotlight-stat wins">
-                            <div class="spotlight-stat-number">0</div>
-                            <div class="spotlight-stat-label">Wins</div>
-                        </div>
-                        <div class="spotlight-stat participations">
-                            <div class="spotlight-stat-number">11</div>
-                            <div class="spotlight-stat-label">Participations</div>
-                        </div>
-                        <div class="spotlight-stat ratio">
-                            <div class="spotlight-stat-number">0%</div>
-                            <div class="spotlight-stat-label">Win Rate</div>
-                        </div>
-                    </div>
-                    <div class="spotlight-address">0xd23199f1222c418ffc...</div>
-                </div>
-                
-                <div class="spotlight-card loser">
-                    <div class="spotlight-title">😞 Second Most Unlucky</div>
-                    <div class="spotlight-handle">@tmnxeq</div>
-                    <div class="spotlight-stats">
-                        <div class="spotlight-stat wins">
-                            <div class="spotlight-stat-number">0</div>
-                            <div class="spotlight-stat-label">Wins</div>
-                        </div>
-                        <div class="spotlight-stat participations">
-                            <div class="spotlight-stat-number">9</div>
-                            <div class="spotlight-stat-label">Participations</div>
-                        </div>
-                        <div class="spotlight-stat ratio">
-                            <div class="spotlight-stat-number">0%</div>
-                            <div class="spotlight-stat-label">Win Rate</div>
-                        </div>
-                    </div>
-                    <div class="spotlight-address">0x48186b345144cd6b3a...</div>
-                </div>
-                
-                <div class="spotlight-card winner">
-                    <div class="spotlight-title">⚡ Most Efficient</div>
-                    <div class="spotlight-handle">@troy_avo</div>
-                    <div class="spotlight-stats">
-                        <div class="spotlight-stat wins">
-                            <div class="spotlight-stat-number">8</div>
-                            <div class="spotlight-stat-label">Wins</div>
-                        </div>
-                        <div class="spotlight-stat participations">
-                            <div class="spotlight-stat-number">13</div>
-                            <div class="spotlight-stat-label">Participations</div>
-                        </div>
-                        <div class="spotlight-stat ratio">
-                            <div class="spotlight-stat-number">61.5%</div>
-                            <div class="spotlight-stat-label">Win Rate</div>
-                        </div>
-                    </div>
-                    <div class="spotlight-address">0x7a29f3a2f65f34105f...</div>
+                <div class="spotlight-table-container">
+                    <div class="spotlight-table-title losers">😔 Top 10 Unlucky</div>
+                    <table class="spotlight-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Wins</th>
+                                <th>Part</th>
+                                <th>Win%</th>
+                                <th>Twitter</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+            <tr>
+                <td class="spotlight-rank">1</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">11</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@TWlTTERGM</td>
+                <td class="spotlight-address">0xd231...e452</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">2</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">9</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@tmnxeq</td>
+                <td class="spotlight-address">0x4818...0764</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">3</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">7</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@stableshaman</td>
+                <td class="spotlight-address">0xd497...027e</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">4</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">6</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@0x9212ce55</td>
+                <td class="spotlight-address">0x9212...813c</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">5</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">5</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@dankrad</td>
+                <td class="spotlight-address">0x634c...be2b</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">6</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">5</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@Nomaticcap</td>
+                <td class="spotlight-address">0x6d23...8506</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">7</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">5</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@mariorz</td>
+                <td class="spotlight-address">0xdaa2...e305</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">8</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">4</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@azsantosk</td>
+                <td class="spotlight-address">0xeb2a...c649</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">9</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">4</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@donnoh_eth</td>
+                <td class="spotlight-address">0x33d6...7390</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">10</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">3</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@traders_insight</td>
+                <td class="spotlight-address">0x81f9...f922</td>
+            </tr>
+        
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -1409,7 +1532,7 @@
         
         <div class="footer">
             <p><strong>Truemarket Lottery Analysis</strong></p>
-            <p>Generated on 10/22/2025 at 12:23:01 PM</p>
+            <p>Generated on 10/22/2025 at 12:29:28 PM</p>
             <p>Data includes 17 lottery rounds with 95 unique participants</p>
         </div>
     </div>
