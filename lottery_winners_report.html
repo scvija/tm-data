@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truemarket Lottery Winners Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .leaderboard-section {
+            padding: 40px;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
+        }
+        
+        tr:hover td {
+            background-color: #f8f9fa;
+        }
+        
+        .rank {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+        
+        .wins {
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 1.1em;
+        }
+        
+        .win-percentage {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .twitter-handle {
+            color: #1da1f2;
+            font-weight: 500;
+        }
+        
+        .address {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .badge-gold {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #8b6914;
+        }
+        
+        .badge-silver {
+            background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+            color: #666;
+        }
+        
+        .badge-bronze {
+            background: linear-gradient(135deg, #cd7f32, #daa520);
+            color: white;
+        }
+        
+        .badge-perfect {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .spotlight-section {
+            padding: 40px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+        
+        .spotlight-tables-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .spotlight-table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .spotlight-table-title {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .spotlight-table-title.winners {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+        
+        .spotlight-table-title.losers {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        .spotlight-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .spotlight-table th {
+            background: #f8f9fa;
+            color: #333;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9em;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .spotlight-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
+        }
+        
+        .spotlight-table tr:hover td {
+            background-color: #f8f9fa;
+        }
+        
+        .spotlight-rank {
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            width: 50px;
+        }
+        
+        .spotlight-wins {
+            font-weight: bold;
+            color: #27ae60;
+            text-align: center;
+            width: 60px;
+        }
+        
+        .spotlight-participations {
+            color: #3498db;
+            text-align: center;
+            width: 80px;
+        }
+        
+        .spotlight-ratio {
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            width: 70px;
+        }
+        
+        .spotlight-handle {
+            color: #1da1f2;
+            font-weight: 500;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .spotlight-address {
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            color: #666;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 40px 0;
+            border-radius: 1px;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+        }
+        
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                padding: 20px;
+            }
+            
+            .stat-number {
+                font-size: 2em;
+            }
+            
+            .leaderboard-section {
+                padding: 20px;
+            }
+            
+            th, td {
+                padding: 10px 15px;
+            }
+            
+            .spotlight-tables-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .spotlight-section {
+                padding: 20px;
+            }
+            
+            .spotlight-table th,
+            .spotlight-table td {
+                padding: 8px 6px;
+                font-size: 0.8em;
+            }
+            
+            .spotlight-handle {
+                max-width: 80px;
+            }
+            
+            .spotlight-address {
+                max-width: 70px;
+            }
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 Truemarket Lottery Winners</h1>
+            <p>Comprehensive Analysis & Leaderboard</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">26</div>
+                <div class="stat-label">Finished Rounds</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">95</div>
+                <div class="stat-label">Total Participants</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">65</div>
+                <div class="stat-label">Winners</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Max Wins</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">68.4%</div>
+                <div class="stat-label">Win Rate</div>
+            </div>
+        </div>
+        
+        
+        <div class="spotlight-section">
+            <h2 class="section-title">🌟 Top 10 Winners & Losers</h2>
+            
+            <div class="spotlight-tables-container">
+                <div class="spotlight-table-container">
+                    <div class="spotlight-table-title winners">🏆 Top 10 Winners</div>
+                    <table class="spotlight-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Wins</th>
+                                <th>Part</th>
+                                <th>Win%</th>
+                                <th>Twitter</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+            <tr>
+                <td class="spotlight-rank">1</td>
+                <td class="spotlight-wins">12</td>
+                <td class="spotlight-participations">20</td>
+                <td class="spotlight-ratio">60.0%</td>
+                <td class="spotlight-handle">@fozzydiablo</td>
+                <td class="spotlight-address">0x0b28...c564</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">2</td>
+                <td class="spotlight-wins">11</td>
+                <td class="spotlight-participations">26</td>
+                <td class="spotlight-ratio">42.3%</td>
+                <td class="spotlight-handle">@DuckDegen</td>
+                <td class="spotlight-address">0xaa16...6c17</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">3</td>
+                <td class="spotlight-wins">10</td>
+                <td class="spotlight-participations">17</td>
+                <td class="spotlight-ratio">58.8%</td>
+                <td class="spotlight-handle">@troy_avo</td>
+                <td class="spotlight-address">0x7a29...8547</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">4</td>
+                <td class="spotlight-wins">9</td>
+                <td class="spotlight-participations">21</td>
+                <td class="spotlight-ratio">42.9%</td>
+                <td class="spotlight-handle">@omgcorn</td>
+                <td class="spotlight-address">0x8e74...15ef</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">5</td>
+                <td class="spotlight-wins">9</td>
+                <td class="spotlight-participations">21</td>
+                <td class="spotlight-ratio">42.9%</td>
+                <td class="spotlight-handle">@MikeGriff11</td>
+                <td class="spotlight-address">0x049e...c11c</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">6</td>
+                <td class="spotlight-wins">9</td>
+                <td class="spotlight-participations">22</td>
+                <td class="spotlight-ratio">40.9%</td>
+                <td class="spotlight-handle">@TokenBrice</td>
+                <td class="spotlight-address">0xaa7a...7d66</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">7</td>
+                <td class="spotlight-wins">9</td>
+                <td class="spotlight-participations">23</td>
+                <td class="spotlight-ratio">39.1%</td>
+                <td class="spotlight-handle">@_RedArctic_</td>
+                <td class="spotlight-address">0x11d2...0812</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">8</td>
+                <td class="spotlight-wins">9</td>
+                <td class="spotlight-participations">24</td>
+                <td class="spotlight-ratio">37.5%</td>
+                <td class="spotlight-handle">@Ceazor7</td>
+                <td class="spotlight-address">0x3c5a...7fe2</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">9</td>
+                <td class="spotlight-wins">9</td>
+                <td class="spotlight-participations">25</td>
+                <td class="spotlight-ratio">36.0%</td>
+                <td class="spotlight-handle">@0xcarnation</td>
+                <td class="spotlight-address">0x36f4...7246</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">10</td>
+                <td class="spotlight-wins">8</td>
+                <td class="spotlight-participations">24</td>
+                <td class="spotlight-ratio">33.3%</td>
+                <td class="spotlight-handle">@poolpitako</td>
+                <td class="spotlight-address">0x9888...acf4</td>
+            </tr>
+        
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="spotlight-table-container">
+                    <div class="spotlight-table-title losers">😔 Top 10 Unlucky</div>
+                    <table class="spotlight-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Wins</th>
+                                <th>Part</th>
+                                <th>Win%</th>
+                                <th>Twitter</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+            <tr>
+                <td class="spotlight-rank">1</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">9</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@tmnxeq</td>
+                <td class="spotlight-address">0x4818...0764</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">2</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">8</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@stableshaman</td>
+                <td class="spotlight-address">0xd497...027e</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">3</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">6</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@Nomaticcap</td>
+                <td class="spotlight-address">0x6d23...8506</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">4</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">6</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@azsantosk</td>
+                <td class="spotlight-address">0xeb2a...c649</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">5</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">6</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@0x9212ce55</td>
+                <td class="spotlight-address">0x9212...813c</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">6</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">5</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@dankrad</td>
+                <td class="spotlight-address">0x634c...be2b</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">7</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">5</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@mariorz</td>
+                <td class="spotlight-address">0xdaa2...e305</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">8</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">4</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@donnoh_eth</td>
+                <td class="spotlight-address">0x33d6...7390</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">9</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">3</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@traders_insight</td>
+                <td class="spotlight-address">0x81f9...f922</td>
+            </tr>
+        
+            <tr>
+                <td class="spotlight-rank">10</td>
+                <td class="spotlight-wins">0</td>
+                <td class="spotlight-participations">3</td>
+                <td class="spotlight-ratio">0%</td>
+                <td class="spotlight-handle">@AustinAdams10</td>
+                <td class="spotlight-address">0xf5b7...226f</td>
+            </tr>
+        
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-divider"></div>
+    
+        
+        <div class="leaderboard-section">
+            <h2 class="section-title">🏅 Complete Winners Leaderboard</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Wins</th>
+                            <th>Participations</th>
+                            <th>Win %</th>
+                            <th>Twitter Handle</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                                <tr>
+                                    <td><span class="rank">1</span><span class="badge badge-gold">🥇</span></td>
+                                    <td><span class="wins">12</span></td>
+                                    <td>20</td>
+                                    <td><span class="win-percentage">60.0%</span></td>
+                                    <td><span class="twitter-handle">@fozzydiablo</span></td>
+                                    <td><span class="address">0x0b28...c564</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">2</span><span class="badge badge-silver">🥈</span></td>
+                                    <td><span class="wins">11</span></td>
+                                    <td>26</td>
+                                    <td><span class="win-percentage">42.3%</span></td>
+                                    <td><span class="twitter-handle">@DuckDegen</span></td>
+                                    <td><span class="address">0xaa16...6c17</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">3</span><span class="badge badge-bronze">🥉</span></td>
+                                    <td><span class="wins">10</span></td>
+                                    <td>17</td>
+                                    <td><span class="win-percentage">58.8%</span></td>
+                                    <td><span class="twitter-handle">@troy_avo</span></td>
+                                    <td><span class="address">0x7a29...8547</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">4</span></td>
+                                    <td><span class="wins">9</span></td>
+                                    <td>21</td>
+                                    <td><span class="win-percentage">42.9%</span></td>
+                                    <td><span class="twitter-handle">@omgcorn</span></td>
+                                    <td><span class="address">0x8e74...15ef</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">5</span></td>
+                                    <td><span class="wins">9</span></td>
+                                    <td>21</td>
+                                    <td><span class="win-percentage">42.9%</span></td>
+                                    <td><span class="twitter-handle">@MikeGriff11</span></td>
+                                    <td><span class="address">0x049e...c11c</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">6</span></td>
+                                    <td><span class="wins">9</span></td>
+                                    <td>22</td>
+                                    <td><span class="win-percentage">40.9%</span></td>
+                                    <td><span class="twitter-handle">@TokenBrice</span></td>
+                                    <td><span class="address">0xaa7a...7d66</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">7</span></td>
+                                    <td><span class="wins">9</span></td>
+                                    <td>23</td>
+                                    <td><span class="win-percentage">39.1%</span></td>
+                                    <td><span class="twitter-handle">@_RedArctic_</span></td>
+                                    <td><span class="address">0x11d2...0812</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">8</span></td>
+                                    <td><span class="wins">9</span></td>
+                                    <td>24</td>
+                                    <td><span class="win-percentage">37.5%</span></td>
+                                    <td><span class="twitter-handle">@Ceazor7</span></td>
+                                    <td><span class="address">0x3c5a...7fe2</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">9</span></td>
+                                    <td><span class="wins">9</span></td>
+                                    <td>25</td>
+                                    <td><span class="win-percentage">36.0%</span></td>
+                                    <td><span class="twitter-handle">@0xcarnation</span></td>
+                                    <td><span class="address">0x36f4...7246</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">10</span></td>
+                                    <td><span class="wins">8</span></td>
+                                    <td>24</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@poolpitako</span></td>
+                                    <td><span class="address">0x9888...acf4</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">11</span></td>
+                                    <td><span class="wins">8</span></td>
+                                    <td>25</td>
+                                    <td><span class="win-percentage">32.0%</span></td>
+                                    <td><span class="twitter-handle">@themandalore9</span></td>
+                                    <td><span class="address">0x9268...6ae3</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">12</span></td>
+                                    <td><span class="wins">7</span></td>
+                                    <td>21</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@cyberducketh</span></td>
+                                    <td><span class="address">0x207f...1df1</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">13</span></td>
+                                    <td><span class="wins">7</span></td>
+                                    <td>21</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@Jrag0x</span></td>
+                                    <td><span class="address">0x4a9a...3c78</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">14</span></td>
+                                    <td><span class="wins">7</span></td>
+                                    <td>21</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@uhr3al</span></td>
+                                    <td><span class="address">0x779e...b726</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">15</span></td>
+                                    <td><span class="wins">7</span></td>
+                                    <td>23</td>
+                                    <td><span class="win-percentage">30.4%</span></td>
+                                    <td><span class="twitter-handle">@DAdvisoor</span></td>
+                                    <td><span class="address">0xac84...7792</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">16</span></td>
+                                    <td><span class="wins">7</span></td>
+                                    <td>23</td>
+                                    <td><span class="win-percentage">30.4%</span></td>
+                                    <td><span class="twitter-handle">@0xTangle</span></td>
+                                    <td><span class="address">0x30a9...3e90</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">17</span></td>
+                                    <td><span class="wins">7</span></td>
+                                    <td>24</td>
+                                    <td><span class="win-percentage">29.2%</span></td>
+                                    <td><span class="twitter-handle">@dillonlin_</span></td>
+                                    <td><span class="address">0x9251...4343</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">18</span></td>
+                                    <td><span class="wins">7</span></td>
+                                    <td>25</td>
+                                    <td><span class="win-percentage">28.0%</span></td>
+                                    <td><span class="twitter-handle">@CyrillePastour</span></td>
+                                    <td><span class="address">0x5f31...8486</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">19</span></td>
+                                    <td><span class="wins">7</span></td>
+                                    <td>26</td>
+                                    <td><span class="win-percentage">26.9%</span></td>
+                                    <td><span class="twitter-handle">@mastermojo83</span></td>
+                                    <td><span class="address">0xf68d...6454</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">20</span></td>
+                                    <td><span class="wins">6</span></td>
+                                    <td>18</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@0xrobin2192</span></td>
+                                    <td><span class="address">0xf75e...d7f7</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">21</span></td>
+                                    <td><span class="wins">6</span></td>
+                                    <td>21</td>
+                                    <td><span class="win-percentage">28.6%</span></td>
+                                    <td><span class="twitter-handle">@opmichael_eth</span></td>
+                                    <td><span class="address">0x6eda...ca0c</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">22</span></td>
+                                    <td><span class="wins">5</span></td>
+                                    <td>14</td>
+                                    <td><span class="win-percentage">35.7%</span></td>
+                                    <td><span class="twitter-handle">@0xngmi</span></td>
+                                    <td><span class="address">0xaa59...6d5f</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">23</span></td>
+                                    <td><span class="wins">5</span></td>
+                                    <td>22</td>
+                                    <td><span class="win-percentage">22.7%</span></td>
+                                    <td><span class="twitter-handle">@CoffeeTimesTW</span></td>
+                                    <td><span class="address">0x7853...c0b7</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">24</span></td>
+                                    <td><span class="wins">5</span></td>
+                                    <td>23</td>
+                                    <td><span class="win-percentage">21.7%</span></td>
+                                    <td><span class="twitter-handle">@rayzhueth</span></td>
+                                    <td><span class="address">0x3113...88d8</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">25</span></td>
+                                    <td><span class="wins">5</span></td>
+                                    <td>23</td>
+                                    <td><span class="win-percentage">21.7%</span></td>
+                                    <td><span class="twitter-handle">@0xSvenska</span></td>
+                                    <td><span class="address">0x6c33...cfed</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">26</span></td>
+                                    <td><span class="wins">5</span></td>
+                                    <td>23</td>
+                                    <td><span class="win-percentage">21.7%</span></td>
+                                    <td><span class="twitter-handle">@cvsThal</span></td>
+                                    <td><span class="address">0x835d...b672</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">27</span></td>
+                                    <td><span class="wins">5</span></td>
+                                    <td>25</td>
+                                    <td><span class="win-percentage">20.0%</span></td>
+                                    <td><span class="twitter-handle">@0xstrobe</span></td>
+                                    <td><span class="address">0x7946...92cc</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">28</span></td>
+                                    <td><span class="wins">5</span></td>
+                                    <td>25</td>
+                                    <td><span class="win-percentage">20.0%</span></td>
+                                    <td><span class="twitter-handle">@octralex</span></td>
+                                    <td><span class="address">0x8806...0d5a</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">29</span></td>
+                                    <td><span class="wins">4</span></td>
+                                    <td>9</td>
+                                    <td><span class="win-percentage">44.4%</span></td>
+                                    <td><span class="twitter-handle">@inkymaze</span></td>
+                                    <td><span class="address">0xb014...bcc7</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">30</span></td>
+                                    <td><span class="wins">4</span></td>
+                                    <td>10</td>
+                                    <td><span class="win-percentage">40.0%</span></td>
+                                    <td><span class="twitter-handle">@DeFi_Dad</span></td>
+                                    <td><span class="address">0x2f71...51c3</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">31</span></td>
+                                    <td><span class="wins">4</span></td>
+                                    <td>11</td>
+                                    <td><span class="win-percentage">36.4%</span></td>
+                                    <td><span class="twitter-handle">@k2_nft</span></td>
+                                    <td><span class="address">0x910e...ab6d</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">32</span></td>
+                                    <td><span class="wins">4</span></td>
+                                    <td>18</td>
+                                    <td><span class="win-percentage">22.2%</span></td>
+                                    <td><span class="twitter-handle">@wilburforce_</span></td>
+                                    <td><span class="address">0xc7f7...d389</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">33</span></td>
+                                    <td><span class="wins">4</span></td>
+                                    <td>20</td>
+                                    <td><span class="win-percentage">20.0%</span></td>
+                                    <td><span class="twitter-handle">@kirekopac</span></td>
+                                    <td><span class="address">0x82ad...bdfc</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">34</span></td>
+                                    <td><span class="wins">4</span></td>
+                                    <td>22</td>
+                                    <td><span class="win-percentage">18.2%</span></td>
+                                    <td><span class="twitter-handle">@bjnpck</span></td>
+                                    <td><span class="address">0x8737...9b81</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">35</span></td>
+                                    <td><span class="wins">3</span></td>
+                                    <td>15</td>
+                                    <td><span class="win-percentage">20.0%</span></td>
+                                    <td><span class="twitter-handle">@plaumax_eth</span></td>
+                                    <td><span class="address">0x4a2a...d790</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">36</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">66.7%</span></td>
+                                    <td><span class="twitter-handle">@beast_ico</span></td>
+                                    <td><span class="address">0x287b...1f39</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">37</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">66.7%</span></td>
+                                    <td><span class="twitter-handle">@llamaonthebrink</span></td>
+                                    <td><span class="address">0x98ab...5459</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">38</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>4</td>
+                                    <td><span class="win-percentage">50.0%</span></td>
+                                    <td><span class="twitter-handle">@portport255</span></td>
+                                    <td><span class="address">0xc97f...5be8</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">39</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>5</td>
+                                    <td><span class="win-percentage">40.0%</span></td>
+                                    <td><span class="twitter-handle">@WestieCapital</span></td>
+                                    <td><span class="address">0xbab4...4258</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">40</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>11</td>
+                                    <td><span class="win-percentage">18.2%</span></td>
+                                    <td><span class="twitter-handle">@0xBreadguy</span></td>
+                                    <td><span class="address">0x6108...0834</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">41</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>12</td>
+                                    <td><span class="win-percentage">16.7%</span></td>
+                                    <td><span class="twitter-handle">@0xgunboats</span></td>
+                                    <td><span class="address">0xbbff...191d</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">42</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>14</td>
+                                    <td><span class="win-percentage">14.3%</span></td>
+                                    <td><span class="twitter-handle">@fullyallocated</span></td>
+                                    <td><span class="address">0x3344...b666</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">43</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>14</td>
+                                    <td><span class="win-percentage">14.3%</span></td>
+                                    <td><span class="twitter-handle">@divine_economy</span></td>
+                                    <td><span class="address">0xd56e...7ab0</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">44</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>16</td>
+                                    <td><span class="win-percentage">12.5%</span></td>
+                                    <td><span class="twitter-handle">@TWlTTERGM</span></td>
+                                    <td><span class="address">0xd231...e452</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">45</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>19</td>
+                                    <td><span class="win-percentage">10.5%</span></td>
+                                    <td><span class="twitter-handle">@ml_sudo</span></td>
+                                    <td><span class="address">0x6d88...2453</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">46</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>21</td>
+                                    <td><span class="win-percentage">9.5%</span></td>
+                                    <td><span class="twitter-handle">@vladanovertime</span></td>
+                                    <td><span class="address">0x0d85...6c83</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">47</span></td>
+                                    <td><span class="wins">2</span></td>
+                                    <td>22</td>
+                                    <td><span class="win-percentage">9.1%</span></td>
+                                    <td><span class="twitter-handle">@lumbergdoteth</span></td>
+                                    <td><span class="address">0xae79...e1ab</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">48</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">50.0%</span></td>
+                                    <td><span class="twitter-handle">@drjasper_eth</span></td>
+                                    <td><span class="address">0x04be...b14a</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">49</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">50.0%</span></td>
+                                    <td><span class="twitter-handle">@mrinconcruz</span></td>
+                                    <td><span class="address">0xcd07...370f</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">50</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">50.0%</span></td>
+                                    <td><span class="twitter-handle">@BurtRock69</span></td>
+                                    <td><span class="address">0xc43c...9705</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">51</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">50.0%</span></td>
+                                    <td><span class="twitter-handle">@Grizzlyshort</span></td>
+                                    <td><span class="address">0x146a...d52b</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">52</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">50.0%</span></td>
+                                    <td><span class="twitter-handle">@0xAfif</span></td>
+                                    <td><span class="address">0x9ad6...0da5</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">53</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@cavalier_eth</span></td>
+                                    <td><span class="address">0x8f87...6ba7</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">54</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@0xPEPO</span></td>
+                                    <td><span class="address">0xdabd...01e9</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">55</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@getty_hill</span></td>
+                                    <td><span class="address">0x9b68...2984</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">56</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@NourHaridy</span></td>
+                                    <td><span class="address">0xc830...7ba3</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">57</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">33.3%</span></td>
+                                    <td><span class="twitter-handle">@samkazemian</span></td>
+                                    <td><span class="address">0x17e0...c96e</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">58</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>4</td>
+                                    <td><span class="win-percentage">25.0%</span></td>
+                                    <td><span class="twitter-handle">@nixorokish</span></td>
+                                    <td><span class="address">0x5554...d19a</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">59</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>4</td>
+                                    <td><span class="win-percentage">25.0%</span></td>
+                                    <td><span class="twitter-handle">@mteamisloading</span></td>
+                                    <td><span class="address">0x35f9...f66f</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">60</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>6</td>
+                                    <td><span class="win-percentage">16.7%</span></td>
+                                    <td><span class="twitter-handle">@muir_eth</span></td>
+                                    <td><span class="address">0xb08a...6e4c</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">61</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>6</td>
+                                    <td><span class="win-percentage">16.7%</span></td>
+                                    <td><span class="twitter-handle">@unbanksyETH</span></td>
+                                    <td><span class="address">0x3612...098e</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">62</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>6</td>
+                                    <td><span class="win-percentage">16.7%</span></td>
+                                    <td><span class="twitter-handle">@KatiegarciaEth</span></td>
+                                    <td><span class="address">0x7553...3ee5</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">63</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>7</td>
+                                    <td><span class="win-percentage">14.3%</span></td>
+                                    <td><span class="twitter-handle">@androolloyd</span></td>
+                                    <td><span class="address">0x86d3...3446</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">64</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>10</td>
+                                    <td><span class="win-percentage">10.0%</span></td>
+                                    <td><span class="twitter-handle">@_ndigo</span></td>
+                                    <td><span class="address">0x5b39...a538</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">65</span></td>
+                                    <td><span class="wins">1</span></td>
+                                    <td>10</td>
+                                    <td><span class="win-percentage">10.0%</span></td>
+                                    <td><span class="twitter-handle">@serpinxbt</span></td>
+                                    <td><span class="address">0x9648...502c</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">66</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>1</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">Unknown</span></td>
+                                    <td><span class="address">0xcf70...10b5</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">67</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>1</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@joeyroth</span></td>
+                                    <td><span class="address">0xcad2...5ae4</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">68</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@binji_x</span></td>
+                                    <td><span class="address">0x0006...8440</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">69</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@MattLGov</span></td>
+                                    <td><span class="address">0x1f4b...bea8</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">70</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@mugglesect</span></td>
+                                    <td><span class="address">0xdeaa...fdb2</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">71</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@Andotlas</span></td>
+                                    <td><span class="address">0x8349...a95b</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">72</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@zengjiajun_eth</span></td>
+                                    <td><span class="address">0xf3f5...cba2</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">73</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@j6sp5r</span></td>
+                                    <td><span class="address">0x18e9...e234</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">74</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@veryHighLander</span></td>
+                                    <td><span class="address">0x819a...a8c0</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">75</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@litocoen</span></td>
+                                    <td><span class="address">0x79c4...25e2</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">76</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>2</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@juanaxyz00</span></td>
+                                    <td><span class="address">0x7acc...4297</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">77</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@traders_insight</span></td>
+                                    <td><span class="address">0x81f9...f922</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">78</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@AustinAdams10</span></td>
+                                    <td><span class="address">0xf5b7...226f</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">79</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@gauthamzzz</span></td>
+                                    <td><span class="address">0x1879...bf80</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">80</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@spreekaway</span></td>
+                                    <td><span class="address">0x935d...3ce6</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">81</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@nemusonaUwU</span></td>
+                                    <td><span class="address">0xee9b...7371</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">82</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@MarkBarrasso</span></td>
+                                    <td><span class="address">0x7588...bfb1</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">83</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@spencecoin</span></td>
+                                    <td><span class="address">0xb94b...5d88</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">84</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@KalebKeny</span></td>
+                                    <td><span class="address">0xdeb3...0ce4</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">85</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@arixoneth</span></td>
+                                    <td><span class="address">0x4d57...6add</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">86</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@djenn</span></td>
+                                    <td><span class="address">0x7525...fd76</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">87</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>3</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@redphonecrypto</span></td>
+                                    <td><span class="address">0x6d7d...79e3</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">88</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>4</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@donnoh_eth</span></td>
+                                    <td><span class="address">0x33d6...7390</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">89</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>5</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@dankrad</span></td>
+                                    <td><span class="address">0x634c...be2b</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">90</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>5</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@mariorz</span></td>
+                                    <td><span class="address">0xdaa2...e305</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">91</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>6</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@Nomaticcap</span></td>
+                                    <td><span class="address">0x6d23...8506</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">92</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>6</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@azsantosk</span></td>
+                                    <td><span class="address">0xeb2a...c649</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">93</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>6</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@0x9212ce55</span></td>
+                                    <td><span class="address">0x9212...813c</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">94</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>8</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@stableshaman</span></td>
+                                    <td><span class="address">0xd497...027e</span></td>
+                                </tr>
+                            
+                                <tr>
+                                    <td><span class="rank">95</span></td>
+                                    <td><span class="wins">0</span></td>
+                                    <td>9</td>
+                                    <td><span class="win-percentage">0.0%</span></td>
+                                    <td><span class="twitter-handle">@tmnxeq</span></td>
+                                    <td><span class="address">0x4818...0764</span></td>
+                                </tr>
+                            
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Truemarket Lottery Analysis</strong></p>
+            <p>Generated on 2/24/2026 at 2:20:12 PM</p>
+            <p>Data includes 26 finished lottery rounds with 95 unique participants</p>
+        </div>
+    </div>
+    
+    <script>
+        // Add some interactive features
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers for table rows
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    // Remove previous selections
+                    tableRows.forEach(r => r.style.backgroundColor = '');
+                    // Highlight clicked row
+                    this.style.backgroundColor = '#e3f2fd';
+                });
+            });
+            
+            // Add smooth scrolling for better UX
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
